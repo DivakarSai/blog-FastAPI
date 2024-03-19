@@ -2,6 +2,8 @@ import uvicorn # ASGI server
 
 from fastapi import FastAPI
 
+from database import database
+
 app = FastAPI()
 
 
