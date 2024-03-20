@@ -1,0 +1,8 @@
+# requirements.txt
+
+fastapi
+uvicorn
+pydantic
+python-jose[cryptography]
+pymongo
+pydantic-settings
