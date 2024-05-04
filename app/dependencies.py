@@ -1,8 +1,7 @@
 # app/dependencies.py
-
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
-from app.models.user import User
+from models.user import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

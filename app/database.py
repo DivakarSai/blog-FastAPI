@@ -1,4 +1,3 @@
-
 from pymongo import MongoClient
 
 from app.config import get_settings

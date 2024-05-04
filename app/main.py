@@ -1,5 +1,13 @@
 
-from . import app
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+from routes.auth import auth_router
+
+app.include_router(prefix="", router=auth_router, tags=["Authentications"])
+
 
 if __name__ == "__main__":
     import uvicorn
