@@ -1,7 +1,6 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
-import jwt
-import jwt.exceptions
+from jose import jwt, JWTError
 from models.user import User
 from typing import Optional
 from pymongo import MongoClient
@@ -45,5 +44,5 @@ def authenticate_user(token: str = Depends(oauth2_scheme)) -> Optional[User]:
         if user is None:
             raise HTTPException(status_code=401, detail="User not found")
         return user
-    except jwt.exceptions.JWTException:
+    except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
