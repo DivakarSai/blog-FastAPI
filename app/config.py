@@ -1,14 +1,13 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+import os
 
+from dotenv import load_dotenv
 
-class settings(BaseSettings):
-    DB_NAME: str
-    DB_USERNAME: str
-    DB_PASSWORD: str
-    class Config:
-        env_file: str = ".env"
+load_dotenv()
 
-@lru_cache
-def get_settings() -> settings:
-    return settings()
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")

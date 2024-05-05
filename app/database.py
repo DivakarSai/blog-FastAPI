@@ -1,17 +1,13 @@
 from pymongo import MongoClient
 
-from app.config import get_settings
-
-settings = get_settings()
-
-DB_URL = f"mongodb://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@localhost:27017/{settings.DB_NAME}"
+from config import DB_NAME, DB_PASSWORD, DB_USERNAME, DB_HOST, DB_PORT
 
 
+DB_URL = f"mongodb://localhost:27017/fastblogger"
 
-# Add logic to connect to MongoDB
 
 client = MongoClient(DB_URL)
-db = client[settings.DB_NAME]
+db = client[DB_NAME]
 
 # Add logic to close the connection
 
