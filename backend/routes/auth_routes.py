@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, UTC
 from pydantic import BaseModel
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from dependencies import authenticate_user
 
 auth_router = APIRouter()
 
@@ -75,5 +76,9 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 # @auth_router.put("/tags")
 # def update_tags(tags: list[str], current_user: User = Depends(authenticate_user)):
-#     # Add logic to update user tags
-#     return {"message": "Tags updated successfully"}
+#     try:
+#         users_collection = db["users"]
+#         users_collection.update_one({"username": current_user.username}, {"$set": {"tags": tags}})
+#         return {"message": "Tags updated successfully"}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail="Internal Server Error")

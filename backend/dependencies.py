@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "secret"
+SECRET_KEY = "divakar"
 ALGORITHM = "HS256"
 
 

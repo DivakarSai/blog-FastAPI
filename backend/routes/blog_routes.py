@@ -8,16 +8,20 @@ blog_router = APIRouter()
 
 # Route to create a new blog
 @blog_router.post("/")
-async def create_blog(blog: Blog, current_user: User = Depends(authenticate_user)):
+async def create_blog(blog: Blog):
     try:
         # Add logic to insert the blog into the database
+        breakpoint()
+        current_user: User = Depends(authenticate_user)
+        breakpoint()
+
         blog_dict = blog.model_dump()
         blog_dict["author"] = current_user.username
         blogs_collection = db["blogs"]
         result = blogs_collection.insert_one(blog_dict)
         return {"message": "Blog created successfully", "blog_id": str(result.inserted_id)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail=e)
 
 # Route to get all blogs with pagination
 @blog_router.get("/")
