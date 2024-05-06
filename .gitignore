@@ -1,4 +1,6 @@
 # Ignore Python environment packages
 venv
 .env
+
+frontend/node_modules
 ```
