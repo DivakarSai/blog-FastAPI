@@ -3,17 +3,14 @@ from models.blog import Blog
 from models.user import User
 from dependencies import authenticate_user
 from database import db
+from bson import ObjectId
 
 blog_router = APIRouter()
 
 # Route to create a new blog
 @blog_router.post("/")
-async def create_blog(blog: Blog):
+async def create_blog(blog: Blog, current_user: User = Depends(authenticate_user)):
     try:
-        # Add logic to insert the blog into the database
-        breakpoint()
-        current_user: User = Depends(authenticate_user)
-        breakpoint()
 
         blog_dict = blog.model_dump()
         blog_dict["author"] = current_user.username
@@ -29,40 +26,52 @@ async def get_all_blogs(page: int = 1, limit: int = 10):
     try:
         # Add logic to fetch blogs from the database with pagination
         skip = (page - 1) * limit
-        blogs = list(db.blogs.find().skip(skip).limit(limit))
-        return {"blogs": blogs}
+        blogs_collection = db["blogs"]
+        blogs = list(blogs_collection.find().skip(skip).limit(limit))
+        # Format the blogs data
+        blogs = [Blog(**blog) for blog in blogs]
+        try:
+            return {"blogs": blogs}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Error formatting blogs data")
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise e
 
 # Route to get a blog by its ID
 @blog_router.get("/{blog_id}")
 async def get_blog_by_id(blog_id: str):
     try:
         # Add logic to fetch a blog by its ID from the database
-        blog = db.blogs.find_one({"_id": blog_id})
-        if not blog:
+        blog_id = ObjectId(blog_id)
+        blogs_collection = db["blogs"]
+        blog = blogs_collection.find_one({"_id": blog_id})
+        try:
+            # format the blog data
+            blog = Blog(**blog)
+            return {"blog": blog}
+        except Exception as e:
             raise HTTPException(status_code=404, detail="Blog not found")
-        return {"blog": blog}
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise e
 
-# Route to update a blog
-@blog_router.put("/{blog_id}")
-async def update_blog(blog_id: str, blog: Blog, current_user: User = Depends(authenticate_user)):
-    try:
-        # Add logic to update the blog in the database
-        db.blogs.update_one({"_id": blog_id}, {"$set": blog.dict()})
-        return {"message": "Blog updated successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+# # Route to update a blog
+# @blog_router.put("/{blog_id}")
+# async def update_blog(blog_id: str, blog: Blog, current_user: User = Depends(authenticate_user)):
+#     try:
+#         # Add logic to update the blog in the database
+#         db.blogs.update_one({"_id": blog_id}, {"$set": blog.dict()})
+#         return {"message": "Blog updated successfully"}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-# Route to delete a blog
-@blog_router.delete("/{blog_id}")
-async def delete_blog(blog_id: str, current_user: User = Depends(authenticate_user)):
-    try:
-        # Add logic to delete the blog from the database
-        db.blogs.delete_one({"_id": blog_id})
-        return {"message": "Blog deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+# # Route to delete a blog
+# @blog_router.delete("/{blog_id}")
+# async def delete_blog(blog_id: str, current_user: User = Depends(authenticate_user)):
+#     try:
+#         # Add logic to delete the blog from the database
+#         db.blogs.delete_one({"_id": blog_id})
+#         return {"message": "Blog deleted successfully"}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail="Internal Server Error")
 

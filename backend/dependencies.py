@@ -1,11 +1,10 @@
 from fastapi import HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from models.user import User
 from typing import Optional
 from pymongo import MongoClient
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 SECRET_KEY = "divakar"
 ALGORITHM = "HS256"
@@ -33,7 +32,7 @@ def get_user_from_database(username: str) -> Optional[User]:
         # If user data doesn't exist, return None
         return None
 
-def authenticate_user(token: str = Depends(oauth2_scheme)) -> Optional[User]:
+def authenticate_user(token: str ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
